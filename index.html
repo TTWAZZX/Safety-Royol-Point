@@ -298,7 +298,7 @@ text: "กำลังโหลดข้อมูล..."
               $('#displaySection').show();
               $('#username').text(userData.Name);
               $('#phone').html(`<i class="fas fa-phone"></i> ${userData.Tel}`);
-              $('.text-muted span:first').text(`ชั้น ${userData.Classroom} | รหัส ${userData.Passport}`);
+              $('.text-muted span:first').text(`ส่วนงาน : ${userData.Classroom} | รหัสประจำตัว : ${userData.Passport}`);
               $('#profilePic').attr('src', profile.pictureUrl);
 
               let score = parseInt(userData.Score || "0");
@@ -598,7 +598,7 @@ $('#scoreModal').on('hidden.bs.modal', function () {
   <footer style="font-size: 14px;">
     © <script>
       document.write(new Date().getFullYear());
-    </script> Copyright | พัฒนาโดยครูสิทธิชาติ สิทธิ
+    </script> Copyright | พัฒนาโดยสัตยา วงศ์ชมภู
     <a href="https://www.facebook.com/SanwithzWebapp" target="_blank"><i class="fa-brands fa-facebook"></i></a>
     <a href="https://www.youtube.com/@Sanwithz" target="_blank"><i class="fa-brands fa-youtube"></i></a>
   </footer>
