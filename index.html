@@ -490,50 +490,50 @@ function onScanSuccess(decodedText, decodedResult) {
 
 
 let html5QrcodeScanner;
-// $('#scoreModal').on('shown.bs.modal', function () {
-//   if (!html5QrcodeScanner) {
-//     html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", {
-//       fps: 10,
-//       qrbox: 250
-//     });
-//   }
-//   html5QrcodeScanner.render(onScanSuccess);
-// });
-  
-  $('#scoreModal').on('shown.bs.modal', function () {
-  const html5QrCode = new Html5Qrcode("qr-reader");
-  Html5Qrcode.getCameras().then(cameras => {
-    const backCamera = cameras.find(camera => camera.label.toLowerCase().includes("back")) || cameras[0];
-    if (backCamera) {
-      html5QrCode.start(
-        { deviceId: { exact: backCamera.id } },
-        {
-          fps: 10,
-          qrbox: 250
-        },
-        onScanSuccess
-      ).catch(err => {
-        console.error("Camera start error:", err);
-        Swal.fire("ผิดพลาด", "ไม่สามารถเข้าถึงกล้องได้", "error");
-      });
-    }
-  }).catch(err => {
-    console.error("Camera fetch error:", err);
-    Swal.fire("ผิดพลาด", "ไม่พบกล้อง", "error");
-  });
-
-  html5QrcodeScanner = html5QrCode;
-});
-
-$('#scoreModal').on('hidden.bs.modal', function () {
-  if (html5QrcodeScanner) {
-    html5QrcodeScanner.stop().then(() => {
-      html5QrcodeScanner.clear();
-    }).catch(err => {
-      console.warn("Stop camera error", err);
+$('#scoreModal').on('shown.bs.modal', function () {
+  if (!html5QrcodeScanner) {
+    html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", {
+      fps: 10,
+      qrbox: 250
     });
   }
+  html5QrcodeScanner.render(onScanSuccess);
 });
+  
+//   $('#scoreModal').on('shown.bs.modal', function () {
+//   const html5QrCode = new Html5Qrcode("qr-reader");
+//   Html5Qrcode.getCameras().then(cameras => {
+//     const backCamera = cameras.find(camera => camera.label.toLowerCase().includes("back")) || cameras[0];
+//     if (backCamera) {
+//       html5QrCode.start(
+//         { deviceId: { exact: backCamera.id } },
+//         {
+//           fps: 10,
+//           qrbox: 250
+//         },
+//         onScanSuccess
+//       ).catch(err => {
+//         console.error("Camera start error:", err);
+//         Swal.fire("ผิดพลาด", "ไม่สามารถเข้าถึงกล้องได้", "error");
+//       });
+//     }
+//   }).catch(err => {
+//     console.error("Camera fetch error:", err);
+//     Swal.fire("ผิดพลาด", "ไม่พบกล้อง", "error");
+//   });
+
+//   html5QrcodeScanner = html5QrCode;
+// });
+
+// $('#scoreModal').on('hidden.bs.modal', function () {
+//   if (html5QrcodeScanner) {
+//     html5QrcodeScanner.stop().then(() => {
+//       html5QrcodeScanner.clear();
+//     }).catch(err => {
+//       console.warn("Stop camera error", err);
+//     });
+//   }
+// });
 
 
 $('#scoreModal').on('hidden.bs.modal', function () {
