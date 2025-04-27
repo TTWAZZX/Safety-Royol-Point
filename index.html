@@ -86,6 +86,32 @@
     .modal-fullscreen .modal-body {
       overflow-y: auto;
     }
+    /* ขนาดหน้าจอมือถือ */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  /* ทำให้ปุ่มขยายเต็มหน้าจอบนมือถือ */
+  .btn-lg {
+    width: 100%;
+  }
+
+  /* ทำให้รูปภาพยืดหยุ่น */
+  .card-img-top {
+    width: 100%;
+    height: auto;
+  }
+
+  /* เปลี่ยนขนาดข้อความให้เหมาะสมกับหน้าจอเล็ก */
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .modal-fullscreen {
+    height: 100%;
+  }
+}
   </style>
 
 
