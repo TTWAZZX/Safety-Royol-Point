@@ -3,7 +3,8 @@
 import { Pool } from 'pg';
 
 // ดึง Connection String จาก Environment Variables ใน Vercel
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const DATABASE_URL = process.env.DATABASE_URL || 'postgres://user:pass@localhost:5432/db'; // เพิ่ม Default
+const pool = new Pool({ connectionString: DATABASE_URL });
 
 export default async function handler(req, res) {
     if (req.method !== 'GET') {

@@ -2,7 +2,8 @@
 
 import { Pool } from 'pg';
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const DATABASE_URL = process.env.DATABASE_URL || 'postgres://avnadmin:[AVNS_hC-iLtAfC3aaFCg5pKi]@pg-royalpoint-xxxx.aivencloud.com:17000/defaultdb?sslmode=require'; // เพิ่ม Default
+const pool = new Pool({ connectionString: DATABASE_URL });
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
