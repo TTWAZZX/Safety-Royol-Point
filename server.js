@@ -1,10 +1,12 @@
-// server.js  (CommonJS เพื่อให้เรียบง่าย)
+// server.js
 const path = require("path");
 const express = require("express");
 const { Pool } = require("pg");
 
 const app = express();
 app.use(express.json());
+// ✅ รองรับ form-urlencoded (เช่น $.ajaxForm)
+app.use(express.urlencoded({ extended: true }));
 
 // ======= Postgres (Aiven) =======
 function normalizeCA(input) {
