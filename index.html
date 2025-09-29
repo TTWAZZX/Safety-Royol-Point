@@ -334,7 +334,6 @@
                     // อัปเดต UI ด้วยข้อมูลจาก PostgreSQL
                     $('#username').text(userData.name);
                     $('#phone').html(`<i class="fas fa-phone"></i> ${userData.tel}`);
-                    // Note: 'classroom' ใน DB ถูกตั้งชื่อให้ตรงกับ 'Classroom' ที่ Frontend คาดหวัง
                     $('.text-muted span:first').text(`ส่วนงาน : ${userData.classroom} | ${userData.passport}`);
 
                     let score = parseInt(userData.score || "0");
@@ -479,9 +478,6 @@
           }
       });
     });
-    
-    // (ฟังก์ชันนี้ถูกลบออกไปในการแก้ไขครั้งก่อน)
-    // function submitData() { /* ... */ }
 
 
     // 5. ฟังก์ชัน submitSecretCode()
@@ -524,7 +520,6 @@
     let html5QrcodeScanner;
     // 6. ฟังก์ชัน onScanSuccess()
     function onScanSuccess(decodedText, decodedResult) {
-      // 💡 ต้องหยุด Scanner ก่อน
       if (html5QrcodeScanner) { html5QrcodeScanner.clear(); }
       $('#scoreModal').modal('hide');
       $.LoadingOverlay("show");
