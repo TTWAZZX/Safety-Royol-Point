@@ -1,19 +1,26 @@
+// api/health.js
 import { Pool } from "pg";
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL, // ใส่ค่าที่ได้จาก Aiven เช่น postgres://...
   ssl: {
     rejectUnauthorized: true,
-    ca: (process.env.AIVEN_CA_CERT || "").replace(/\\n/g, "\n"),
+    ca: (process.env.AIVEN_CA_CERT || "").replace(/\\n/g, "\n"), // ใช้ CA Cert จาก Aiven
   },
 });
 
 export default async function handler(req, res) {
   try {
-    const r = await pool.query("SELECT now() AS now");
-    res.status(200).json({ ok: true, now: r.rows[0].now });
-  } catch (e) {
-    console.error("DB Health Check Error:", e);
-    res.status(500).json({ ok: false, error: String(e.message || e) });
+    const result = await pool.query("SELECT now() as now"); // เช็คว่า DB ตอบได้ไหม
+    res.status(200).json({
+      ok: true,
+      now: result.rows[0].now,
+    });
+  } catch (err) {
+    console.error("DB Health Check Error:", err);
+    res.status(500).json({
+      ok: false,
+      error: err.message || String(err),
+    });
   }
 }
