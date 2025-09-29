@@ -1,4 +1,4 @@
-// register.js
+// api/register.js
 const pool = require("../db");
 
 module.exports = async function registerHandler(req, res) {
@@ -8,7 +8,7 @@ module.exports = async function registerHandler(req, res) {
   }
 
   try {
-    // ถ้าคอลัมน์ไม่ตรง ปรับชื่อให้ตรงกับตารางจริงของคุณ
+    // ปรับชื่อคอลัมน์ให้ตรงกับตารางจริงของคุณ
     const q = `
       INSERT INTO users (uid, name, room, dob, passport, telephone, score)
       VALUES ($1,$2,$3,$4,$5,$6,$7)
@@ -23,6 +23,8 @@ module.exports = async function registerHandler(req, res) {
     return res.status(409).json({ status: "error", message: "User already registered" });
   } catch (e) {
     console.error("POST /api/register error:", e.stack || e);
-    return res.status(500).json({ status: "error", message: e.message || "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ status: "error", message: e.message || "Internal Server Error" });
   }
 };

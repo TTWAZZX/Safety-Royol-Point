@@ -1,4 +1,4 @@
-// add-score.js
+// api/add-score.js
 const pool = require("../db");
 
 module.exports = async function addScoreHandler(req, res) {
@@ -11,7 +11,7 @@ module.exports = async function addScoreHandler(req, res) {
   try {
     await client.query("BEGIN");
 
-    // ล็อครหัสคูปองไว้ก่อน
+    // ล็อกคูปองก่อน
     const r1 = await client.query(
       `SELECT point, status FROM coupons WHERE code = $1 FOR UPDATE`,
       [code]
@@ -28,7 +28,7 @@ module.exports = async function addScoreHandler(req, res) {
       return res.status(409).json({ status: "used", message: "รหัสนี้ถูกใช้ไปแล้ว" });
     }
 
-    // mark ใช้แล้ว + บันทึกว่าใครใช้
+    // mark ใช้แล้ว
     await client.query(
       `UPDATE coupons
          SET status='USED', claimer_ui=$1, "type"=$2, claimed_at=NOW()
@@ -36,7 +36,7 @@ module.exports = async function addScoreHandler(req, res) {
       [uid, type, code]
     );
 
-    // เติมคะแนนให้ user
+    // เติมคะแนน
     const r2 = await client.query(
       `UPDATE users SET score = COALESCE(score,0) + $1 WHERE uid=$2 RETURNING score`,
       [coupon.point, uid]
@@ -52,7 +52,9 @@ module.exports = async function addScoreHandler(req, res) {
   } catch (e) {
     await client.query("ROLLBACK");
     console.error("POST /api/add-score error:", e.stack || e);
-    return res.status(500).json({ status: "error", message: e.message || "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ status: "error", message: e.message || "Internal Server Error" });
   } finally {
     client.release();
   }
