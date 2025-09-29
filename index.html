@@ -311,10 +311,12 @@
   </div>
 
   <script>
-    // 1. ตัวแปร URL ใหม่สำหรับ Vercel API Routes
-    const registerUrl = "/api/register"; 
-    const scoreUpdateUrl = "/api/add-score";
-    const scoreFetchUrl = "/api/get-score"; 
+    // 1. ตัวแปร URL ใหม่สำหรับ Render Web Service
+    // 🚨 IMPORTANT: Replace 'https://safety-royol-point.onrender.com' with your actual Render Public URL
+    const API_BASE_URL = 'https://YOUR-RENDER-URL.onrender.com';
+    const registerUrl = API_BASE_URL + "/api/register"; 
+    const scoreUpdateUrl = API_BASE_URL + "/api/add-score";
+    const scoreFetchUrl = API_BASE_URL + "/api/get-score"; 
     
     // LINE LIFF ID เดิม
     const liffID = "2007053300-QoEvbXyn"; 
