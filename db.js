@@ -1,19 +1,50 @@
 // db.js
 const { Pool } = require("pg");
 
-// แปลงค่า CA: รองรับทั้งสตริงเดียวที่คั่นด้วย \n และหลายบรรทัดจริง
-function normalizeCA(input = "") {
-  if (!input) return null;
-  return input.includes("\\n") ? input.replace(/\\n/g, "\n") : input;
+// แปลง ENV เป็นหลายบรรทัด + แยกเป็นหลายใบ (รองรับ CA bundle)
+function normalizeCABundle(input = "") {
+  if (!input) return { raw: null, arr: [] };
+  const pem = input.includes("\\n") ? input.replace(/\\n/g, "\n") : input;
+
+  const blocks = pem
+    .split("-----END CERTIFICATE-----")
+    .map(b => b.trim())
+    .filter(Boolean)
+    .map(b =>
+      b.includes("-----BEGIN CERTIFICATE-----")
+        ? `${b}\n-----END CERTIFICATE-----`
+        : null
+    )
+    .filter(Boolean);
+
+  return { raw: pem, arr: blocks };
 }
 
-const ca = normalizeCA(process.env.AIVEN_CA_CERT);
+const caNorm = normalizeCABundle(process.env.AIVEN_CA_CERT);
 
-// NOTE: ต้องให้ DATABASE_URL ลงท้ายด้วย ?sslmode=require
+// ✅ ตั้งธงบังคับโหมดไม่ตรวจใบรับรอง (เพื่อ “ให้ติดก่อน”)
+//   ตั้ง FORCE_INSECURE_SSL=1 ใน Render แล้ว redeploy
+const FORCE_INSECURE = String(process.env.FORCE_INSECURE_SSL || "") === "1";
+
+const sslConfig = FORCE_INSECURE
+  ? { require: true, rejectUnauthorized: false }
+  : (caNorm.arr.length
+      ? { rejectUnauthorized: true, ca: caNorm.arr }
+      : (caNorm.raw
+          ? { rejectUnauthorized: true, ca: caNorm.raw }
+          : { require: true, rejectUnauthorized: false })); // fallback ถ้าไม่มี CA
+
+// DEBUG: พิมพ์สถานะครั้งเดียวตอนสตาร์ท
+console.log("[PG SSL] insecure=%s, caPresent=%s, caCount=%d, hasSslmode=%s",
+  FORCE_INSECURE,
+  Boolean(caNorm.raw),
+  caNorm.arr.length,
+  /\bsslmode=require\b/i.test(process.env.DATABASE_URL || "")
+);
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  // ถ้ามี CA ใช้แบบเข้มงวด, ถ้าไม่มีให้ต่อแบบผ่อนปรนเพื่อให้ระบบติดก่อน (แล้วค่อยกลับมาใส่ CA ที่ถูก)
-  ssl: ca ? { rejectUnauthorized: true, ca } : { require: true, rejectUnauthorized: false },
+  connectionString: process.env.DATABASE_URL, // ควรลงท้าย ?sslmode=require
+  ssl: sslConfig,
 });
 
 module.exports = pool;

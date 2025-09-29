@@ -8,6 +8,7 @@ module.exports = async function healthHandler(_req, res) {
       ok: true,
       now: r.rows[0].now,
       meta: {
+        insecure: String(process.env.FORCE_INSECURE_SSL || "") === "1",
         caPresent: Boolean(process.env.AIVEN_CA_CERT),
         hasSslmodeRequire: /\bsslmode=require\b/i.test(process.env.DATABASE_URL || "")
       }
@@ -18,6 +19,7 @@ module.exports = async function healthHandler(_req, res) {
       ok: false,
       error: e.message || String(e),
       meta: {
+        insecure: String(process.env.FORCE_INSECURE_SSL || "") === "1",
         caPresent: Boolean(process.env.AIVEN_CA_CERT),
         hasSslmodeRequire: /\bsslmode=require\b/i.test(process.env.DATABASE_URL || "")
       }
