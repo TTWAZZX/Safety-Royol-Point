@@ -5,26 +5,25 @@ function normalizeCA(input = "") {
   if (!input) return null;
   return input.includes("\\n") ? input.replace(/\\n/g, "\n") : input;
 }
-
 const ca = normalizeCA(process.env.AIVEN_CA_CERT);
 
-// ถ้า FORCE_INSECURE_SSL=1 จะบังคับข้ามการตรวจใบรับรอง (แก้ขัดให้ติดก่อน)
-const FORCE_INSECURE = String(process.env.FORCE_INSECURE_SSL || "") === "1";
+// ยอมรับค่าหลายแบบ: "1", "true", "yes", "on" => insecure = true
+const val = String(process.env.FORCE_INSECURE_SSL || "").trim().toLowerCase();
+const FORCE_INSECURE = !!val && val !== "0" && val !== "false" && val !== "off" && val !== "no";
 
 const sslConfig = FORCE_INSECURE
   ? { require: true, rejectUnauthorized: false }
-  : (ca
-      ? { rejectUnauthorized: true, ca }
-      : { require: true, rejectUnauthorized: false }); // fallback ถ้าไม่ได้ตั้ง CA
+  : (ca ? { rejectUnauthorized: true, ca } : { require: true, rejectUnauthorized: false });
 
-console.log("[PG SSL] insecure=%s, caPresent=%s, hasSslmode=%s",
+console.log("[PG SSL] raw.FORCE_INSECURE_SSL=%j insecure=%s caPresent=%s hasSslmode=%s",
+  process.env.FORCE_INSECURE_SSL,
   FORCE_INSECURE,
   Boolean(ca),
   /\bsslmode=require\b/i.test(process.env.DATABASE_URL || "")
 );
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, // ควรลงท้าย ?sslmode=require
+  connectionString: process.env.DATABASE_URL,
   ssl: sslConfig,
 });
 
