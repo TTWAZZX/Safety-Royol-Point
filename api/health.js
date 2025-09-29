@@ -1,5 +1,5 @@
 // ====== วางแทนส่วนตั้งค่า PG และ /api/health ======
-const { Pool } = require("pg");
+const pool = require("../db");
 
 // แปลง ENV ให้เป็นหลายบรรทัด + แยกเป็น bundle
 function normalizeCABundle(input = "") {
