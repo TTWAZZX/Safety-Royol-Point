@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, // ต้องลงท้ายด้วย ?sslmode=require
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: true,
     ca: (process.env.AIVEN_CA_CERT || '').replace(/\\n/g, '\n'),

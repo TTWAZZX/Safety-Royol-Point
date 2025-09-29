@@ -1,11 +1,10 @@
-// api/health.js
-import { Pool } from "pg";
+import { Pool } from 'pg';
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, // ใส่ค่าที่ได้จาก Aiven เช่น postgres://...
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: true,
-    ca: (process.env.AIVEN_CA_CERT || "").replace(/\\n/g, "\n"), // ใช้ CA Cert จาก Aiven
+    ca: (process.env.AIVEN_CA_CERT || '').replace(/\\n/g, '\n'),
   },
 });
 
